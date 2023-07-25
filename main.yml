@@ -1,0 +1,47 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace CyaraAPI
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            // Account ID
+            string accountId = "124";
+
+            // Campaign ID
+            string campaignId = "121702";
+
+            // Campaign run ID
+            string campaignRunId = "345678";
+
+            // Execute campaign
+            var executeCampaignRequest = new HttpRequestMessage(HttpMethod.Post, $"https://www.cyaraportal.us/CyaraWebApi/swagger/index.html?url=/CyaraWebApi/swagger/v3.0/accounts/{accountId}/campaigns/{campaignId}/execute");
+            var executeCampaignResponse = await executeCampaignRequest.GetAsync();
+            if (executeCampaignResponse.StatusCode == StatusCodes.OK)
+            {
+                var campaignResults = executeCampaignResponse.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(campaignResults);
+            }
+            else
+            {
+                throw new Exception("Failed to execute campaign");
+            }
+
+            // Get campaign run results
+            var getCampaignRunResultsRequest = new HttpRequestMessage(HttpMethod.Get, $"https://www.cyaraportal.us/CyaraWebApi/swagger/index.html?url=/CyaraWebApi/swagger/v3.0/accounts/{accountId}/campaigns/{campaignId}/runs/{campaignRunId}");
+            var getCampaignRunResultsResponse = await getCampaignRunResultsRequest.GetAsync();
+            if (getCampaignRunResultsResponse.StatusCode == StatusCodes.OK)
+            {
+                var runResults = getCampaignRunResultsResponse.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(runResults);
+            }
+            else
+            {
+                throw new Exception("Failed to get campaign run results");
+            }
+        }
+    }
+}
